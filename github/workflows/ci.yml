@@ -27,28 +27,32 @@ jobs:
             - name: Run tests
               working-directory: .
               run: ./gradlew test
+
     integration-test:
 	runs-on: ubuntu-latest
-	strategy:
-	  matrix:
-	    python-version: [3.5, 3.6, 3.7, 3.8]
-
+	needs: build-and-test # make sure unit testing is run first
 	steps:
 	    - uses:
 		actions/checkout@v1
+
 	    - name: Start docker server
 	      working-directory: .
 	      run: docker-compose up -d --build
-	    - name: Set up Python ${{ matrix.python-version }}
+
+	    - name: Set up Python 3.7
 	      uses: actions/setup-python@v1
 	      with:
-		python-version: ${{ matrix.python-version }}
+		python-version: 3.7
+
 	    - name: Install dependencies
+	      working-directory: .
 	      run: |
-		pip3 install -U requests
+		pip install -U requests && pip install -U pytest
+
 	    - name: Test with pytest
-	      run: |
-	        pip3 install -U pytest
-		pytest
+	      working-directory: .
+	      run: pytest
+
 	    - name: Stop docker server
+	      working-directory: .
 	      run: docker-compose down
