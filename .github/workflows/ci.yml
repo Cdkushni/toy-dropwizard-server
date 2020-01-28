@@ -31,22 +31,22 @@ jobs:
               - uses: actions/checkout@v1
 
               - name: Start docker server
-              working-directory: .
-              run: docker-compose up -d --build
+                working-directory: .
+                run: docker-compose up -d --build
 
               - name: Set up Python 3.7
-              uses: actions/setup-python@v1
-              with:
-                  python-version: '3.X'
+                uses: actions/setup-python@v1
+                with:
+                    python-version: '3.X'
 
               - name: Install dependencies
-              working-directory: .
-              run: pip3 install requests && pip3 install pytest
+                working-directory: .
+                run: pip install requests pytest
 
               - name: Test with pytest
-              working-directory: .
-              run: pytest
+                working-directory: .
+                run: pytest
 
               - name: Stop docker server
-              working-directory: .
-              run: docker-compose down
+                working-directory: .
+                run: docker-compose down
