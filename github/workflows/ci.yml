@@ -27,7 +27,18 @@ jobs:
             - name: Run tests
               working-directory: .
               run: ./gradlew test
+    integration-test:
+	runs-on: ubuntu-latest
+	strategy:
+	  matrix:
+	    python-version: [3.5, 3.6, 3.7, 3.8]
 
+	steps:
+	    - uses:
+		actions/checkout@v1
+	    - name: Start docker server
+	      working-directory: .
+	      run: docker-compose up -d --build
 	    - name: Set up Python ${{ matrix.python-version }}
 	      uses: actions/setup-python@v1
 	      with:
@@ -39,3 +50,5 @@ jobs:
 	      run: |
 	        pip3 install -U pytest
 		pytest
+	    - name: Stop docker server
+	      run: docker-compose down
